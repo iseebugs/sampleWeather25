@@ -30,8 +30,11 @@ class LocationService: NSObject {
     }
 
     private func useDefaultLocation() {
-        delegate?.didUpdateLocation(latitude: Constants.defaultLocation.latitude,
-                                    longitude: Constants.defaultLocation.longitude)
+//        delegate?.didUpdateLocation(latitude: Constants.defaultLocation.latitude,
+//                                    longitude: Constants.defaultLocation.longitude)
+        
+        delegate?.didUpdateLocation(latitude: Constants.Location.fallback.latitude,
+                                    longitude: Constants.Location.fallback.longitude)
     }
 }
 

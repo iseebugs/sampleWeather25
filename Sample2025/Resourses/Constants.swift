@@ -10,8 +10,14 @@ import CoreLocation
 
 struct Constants {
     
-    static let defaultLocation = CLLocationCoordinate2D(latitude: 55.7558, longitude: 37.6173)
-    static let currentWeatherURL = "http://api.weatherapi.com/v1/current.json"
-    static let forecastWeatherURL = "http://api.weatherapi.com/v1/forecast.json"
-  //  static let weatherAPIKey = "API_KEY"
+    struct API {
+        
+        static let key = "key"
+        static let baseURL = "https://api.weatherapi.com/v1/"
+    }
+
+    struct Location {
+        
+        static let fallback = CLLocationCoordinate2D(latitude: 55.7558, longitude: 37.6173)
+    }
 }

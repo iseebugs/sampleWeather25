@@ -9,8 +9,8 @@ import UIKit
 
 protocol WeatherViewProtocol: AnyObject {
     
-    func showWeatherModel(_ data: String)
     func showError(_ message: String)
+    func showWeather(_ model: WeatherModel)
 }
 
 protocol WeatherPresenterProtocol: AnyObject {
@@ -30,6 +30,6 @@ protocol WeatherRouterProtocol: AnyObject {
 
 protocol WeatherInteractorOutputProtocol: AnyObject {
     
-    func didFetchWeather(data: String)
+    func didFetchWeather(model: WeatherModel)
     func didFailToFetchWeather(error: String)
 }

@@ -13,7 +13,8 @@ class WeatherService: WeatherServiceProtocol {
     private let session = URLSession.shared
 
     func fetchCurrentWeather(lat: Double, lon: Double, completion: @escaping (Result<WeatherModel, Error>) -> Void) {
-        let urlString = "\(Constants.currentWeatherURL)?q=\(lat),\(lon)"
+        
+        let urlString = "\(Constants.API.baseURL)current.json?key=\(Constants.API.key)&q=\(lat),\(lon)"
         guard let url = URL(string: urlString) else {
             return completion(.failure(ServiceError.invalidURL))
         }
@@ -28,6 +29,8 @@ class WeatherService: WeatherServiceProtocol {
             }
 
             do {
+                print(String(data: data, encoding: .utf8) ?? "no data")
+
                 let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                 if let current = json?["current"] as? [String: Any],
                    let temp = current["temp_c"] as? Double,
@@ -51,7 +54,8 @@ class WeatherService: WeatherServiceProtocol {
     }
 
     func fetchForecast(lat: Double, lon: Double, completion: @escaping (Result<ForecastModel, Error>) -> Void) {
-        let urlString = "\(Constants.forecastWeatherURL)?q=\(lat),\(lon)"
+        
+        let urlString = "\(Constants.API.baseURL)current.json?key=\(Constants.API.key)&q=\(lat),\(lon)"
         guard let url = URL(string: urlString) else {
             return completion(.failure(ServiceError.invalidURL))
         }
@@ -62,11 +66,3 @@ class WeatherService: WeatherServiceProtocol {
         }.resume()
     }
 }
-
-enum ServiceError: Error {
-    case invalidURL
-    case emptyResponse
-    case invalidFormat
-    case notImplemented
-}
-

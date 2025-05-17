@@ -20,8 +20,8 @@ class WeatherPresenter: WeatherPresenterProtocol {
 
 extension WeatherPresenter: WeatherInteractorOutputProtocol {
     
-    func didFetchWeather(data: String) {
-        view?.showWeatherModel(data)
+    func didFetchWeather(model: WeatherModel) {
+        view?.showWeather(model)
     }
 
     func didFailToFetchWeather(error: String) {

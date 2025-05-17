@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import CoreLocation
 
 class WeatherInteractor: WeatherInteractorProtocol {
     
     weak var presenter: WeatherInteractorOutputProtocol?
+
     private let locationService = LocationService()
-    private let weatherService = WeatherService()
+    private let weatherService: WeatherServiceProtocol = WeatherService()
 
     init() {
         locationService.delegate = self
@@ -28,16 +30,19 @@ extension WeatherInteractor: LocationServiceDelegate {
         weatherService.fetchCurrentWeather(lat: latitude, lon: longitude) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let weather):
-                    self?.presenter?.didFetchWeather(data: "\(weather.conditionText), \(weather.temperature)°C")
+                case .success(let model):
+                    self?.presenter?.didFetchWeather(model: model)
                 case .failure(let error):
                     self?.presenter?.didFailToFetchWeather(error: error.localizedDescription)
                 }
             }
         }
+
+        // weatherService.fetchForecast(...) { ... }
     }
 
     func didFailWithDefaultLocation() {
-        presenter?.didFailToFetchWeather(error: "Location access denied, using fallback.")
+        let fallback = Constants.Location.fallback
+        didUpdateLocation(latitude: fallback.latitude, longitude: fallback.longitude)
     }
 }
