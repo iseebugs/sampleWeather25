@@ -17,7 +17,7 @@ class WeatherViewController: UIViewController, WeatherViewProtocol {
         presenter?.viewDidLoad()
     }
 
-    func showWeatherData(_ data: String) {
+    func showWeatherModel(_ data: String) {
         // Показать данные
         print("Weather data: \(data)")
     }

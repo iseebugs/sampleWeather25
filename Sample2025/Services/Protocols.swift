@@ -10,3 +10,9 @@ protocol LocationServiceDelegate: AnyObject {
     func didUpdateLocation(latitude: Double, longitude: Double)
     func didFailWithDefaultLocation()
 }
+
+protocol WeatherServiceProtocol {
+    
+    func fetchCurrentWeather(lat: Double, lon: Double, completion: @escaping (Result<WeatherModel, Error>) -> Void)
+    func fetchForecast(lat: Double, lon: Double, completion: @escaping (Result<ForecastModel, Error>) -> Void)
+}

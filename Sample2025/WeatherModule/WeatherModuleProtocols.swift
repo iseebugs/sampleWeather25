@@ -9,7 +9,7 @@ import UIKit
 
 protocol WeatherViewProtocol: AnyObject {
     
-    func showWeatherData(_ data: String)
+    func showWeatherModel(_ data: String)
     func showError(_ message: String)
 }
 

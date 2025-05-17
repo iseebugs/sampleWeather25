@@ -11,6 +11,7 @@ class WeatherInteractor: WeatherInteractorProtocol {
     
     weak var presenter: WeatherInteractorOutputProtocol?
     private let locationService = LocationService()
+    private let weatherService = WeatherService()
 
     init() {
         locationService.delegate = self
@@ -24,9 +25,16 @@ class WeatherInteractor: WeatherInteractorProtocol {
 extension WeatherInteractor: LocationServiceDelegate {
     
     func didUpdateLocation(latitude: Double, longitude: Double) {
-                                                                                            // TODO: сделать запрос погоды по координатам
-        print("🌍🌍🌍 Location: \(latitude), \(longitude)")
-        presenter?.didFetchWeather(data: "Weather for lat \(latitude), lon \(longitude)")
+        weatherService.fetchCurrentWeather(lat: latitude, lon: longitude) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let weather):
+                    self?.presenter?.didFetchWeather(data: "\(weather.conditionText), \(weather.temperature)°C")
+                case .failure(let error):
+                    self?.presenter?.didFailToFetchWeather(error: error.localizedDescription)
+                }
+            }
+        }
     }
 
     func didFailWithDefaultLocation() {

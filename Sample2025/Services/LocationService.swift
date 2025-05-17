@@ -36,6 +36,7 @@ class LocationService: NSObject {
 }
 
 extension LocationService: CLLocationManagerDelegate {
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             delegate?.didUpdateLocation(latitude: location.coordinate.latitude,
