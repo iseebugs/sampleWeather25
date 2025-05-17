@@ -8,13 +8,28 @@
 import Foundation
 
 class WeatherInteractor: WeatherInteractorProtocol {
+    
     weak var presenter: WeatherInteractorOutputProtocol?
+    private let locationService = LocationService()
+
+    init() {
+        locationService.delegate = self
+    }
 
     func fetchWeather() {
-        // Здесь будет реальный API-запрос, пока заглушка:
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.presenter?.didFetchWeather(data: "Sunny, +25°C")
-        }
+        locationService.requestLocation()
     }
 }
 
+extension WeatherInteractor: LocationServiceDelegate {
+    
+    func didUpdateLocation(latitude: Double, longitude: Double) {
+                                                                                            // TODO: сделать запрос погоды по координатам
+        print("🌍🌍🌍 Location: \(latitude), \(longitude)")
+        presenter?.didFetchWeather(data: "Weather for lat \(latitude), lon \(longitude)")
+    }
+
+    func didFailWithDefaultLocation() {
+        presenter?.didFailToFetchWeather(error: "Location access denied, using fallback.")
+    }
+}
