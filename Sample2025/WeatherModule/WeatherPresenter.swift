@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - WeatherPresenterProtocol
+
 class WeatherPresenter: WeatherPresenterProtocol {
     
     weak var view: WeatherViewProtocol?
@@ -17,6 +19,8 @@ class WeatherPresenter: WeatherPresenterProtocol {
         interactor?.fetchWeather()
     }
 }
+
+// MARK: - WeatherInteractorOutputProtocol
 
 extension WeatherPresenter: WeatherInteractorOutputProtocol {
     
