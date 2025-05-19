@@ -29,6 +29,8 @@ final class HourlyForecastCell: UICollectionViewCell {
     }
     
     private func setup() {
+        self.contentView.backgroundColor = .systemTeal
+
         timeLabel.font = .systemFont(ofSize: 14)
         timeLabel.textAlignment = .center
         

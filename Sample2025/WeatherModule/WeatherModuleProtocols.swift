@@ -7,32 +7,49 @@
 
 import UIKit
 
+// MARK: - View
+
 protocol WeatherViewProtocol: AnyObject {
     
+    func updateMainWeatherInfo(temperature: String, description: String, iconURL: String)
+    func reloadHourlyForecast()
+    func reloadDailyForecast()
     func showError(_ message: String)
-    func showWeather(_ model: WeatherModel)
-    func showHourlyForecast(_ forecast: [HourlyForecast])
+    func hideError()
 }
 
+// MARK: - WeatherPresenterProtocol
+
 protocol WeatherPresenterProtocol: AnyObject {
-    
     func viewDidLoad()
-    func didFetchForecast(_ forecast: ForecastModel)
+
+    func numberOfHourlyItems() -> Int
+    func hourlyItem(at index: Int) -> HourlyForecast
+
+    func numberOfDailyItems() -> Int
+    func dailyPresenter(at index: Int) -> DailyForecastCellPresenterProtocol
 }
+
+
+// MARK: - Interactor
 
 protocol WeatherInteractorProtocol: AnyObject {
     
     func fetchWeather()
 }
 
-protocol WeatherRouterProtocol: AnyObject {
-    
-    static func createModule() -> UIViewController
-}
+// MARK: - Interactor Output
 
 protocol WeatherInteractorOutputProtocol: AnyObject {
     
     func didFetchWeather(model: WeatherModel)
-    func didFailToFetchWeather(error: String)
     func didFetchForecast(_ forecast: ForecastModel)
+    func didFailToFetchWeather(error: String)
+}
+
+// MARK: - Router
+
+protocol WeatherRouterProtocol: AnyObject {
+    
+    static func createModule() -> UIViewController
 }
