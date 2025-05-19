@@ -55,16 +55,20 @@ extension WeatherPresenter: WeatherInteractorOutputProtocol {
             iconURL: model.iconURL
         )
     }
-
+    
     func didFetchForecast(_ forecast: ForecastModel) {
-        hourlyForecast = forecast.hourly
-        dailyForecastPresenters = forecast.daily.map { DailyForecastCellPresenter(model: $0) }
-        view?.hideError()
-        view?.reloadHourlyForecast()
-        view?.reloadDailyForecast()
-    }
+        print("💕💕💕 daily count: \(forecast)")
+
+          hourlyForecast = forecast.hourly
+          dailyForecastPresenters = forecast.daily.map { DailyForecastCellPresenter(model: $0) }
+          print("✨✨✨ daily count: \(dailyForecastPresenters.count)")
+          view?.hideError()
+          view?.reloadHourlyForecast()
+          view?.reloadDailyForecast()
+      }
+
 
     func didFailToFetchWeather(error: String) {
-        view?.showError(error)
+view?.showError(error)
     }
 }

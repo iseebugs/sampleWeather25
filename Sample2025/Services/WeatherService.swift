@@ -67,6 +67,10 @@ class WeatherService: WeatherServiceProtocol {
             guard let data = data else {
                 return completion(.failure(ServiceError.emptyResponse))
             }
+            
+//             let string = String(data: data, encoding: .utf8)
+//                print("🔵 RAW RESPONSE:")
+//                print(string)
 
             do {
                 let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -102,7 +106,12 @@ class WeatherService: WeatherServiceProtocol {
                     }
                 }
 
-                let forecastModel = ForecastModel(hourly: hourly, daily: []) // daily ??
+                let daily: [DailyForecast] = days.compactMap { dayJSON in
+                    guard let dayData = try? JSONSerialization.data(withJSONObject: dayJSON) else { return nil }
+                    return try? JSONDecoder().decode(DailyForecast.self, from: dayData)
+                }
+
+                let forecastModel = ForecastModel(hourly: hourly, daily: daily)
                 completion(.success(forecastModel))
 
             } catch {
