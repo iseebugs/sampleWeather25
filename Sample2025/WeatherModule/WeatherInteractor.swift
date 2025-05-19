@@ -38,7 +38,17 @@ extension WeatherInteractor: LocationServiceDelegate {
             }
         }
 
-        // weatherService.fetchForecast(...) { ... }
+        weatherService.fetchForecast(lat: latitude, lon: longitude) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let forecast):
+                    self?.presenter?.didFetchForecast(forecast)
+                case .failure(let error):
+                                                                                // TODO: показать окошко
+                    print("Forecast error: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 
     func didFailWithDefaultLocation() {

@@ -24,6 +24,10 @@ class WeatherPresenter: WeatherPresenterProtocol {
 
 extension WeatherPresenter: WeatherInteractorOutputProtocol {
     
+    func didFetchForecast(_ forecast: ForecastModel) {
+        view?.showHourlyForecast(forecast.hourly)
+    }
+    
     func didFetchWeather(model: WeatherModel) {
         view?.showWeather(model)
     }

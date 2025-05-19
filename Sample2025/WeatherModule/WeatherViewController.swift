@@ -11,11 +11,7 @@ class WeatherViewController: UIViewController {
     
     var presenter: WeatherPresenterProtocol?
 
-    private var hourlyData: [HourlyForecast] = [
-        HourlyForecast(time: "18:00", temperature: 23.0, iconURL: "https://cdn.weatherapi.com/weather/64x64/day/113.png"),
-        HourlyForecast(time: "19:00", temperature: 22.0, iconURL: "https://cdn.weatherapi.com/weather/64x64/day/116.png"),
-        HourlyForecast(time: "20:00", temperature: 21.0, iconURL: "https://cdn.weatherapi.com/weather/64x64/night/122.png")
-    ]
+    private var hourlyData: [HourlyForecast] = []
     
     private lazy var hourlyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -96,6 +92,7 @@ class WeatherViewController: UIViewController {
 // MARK: - UICollectionViewDataSource
 
 extension WeatherViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return hourlyData.count
     }
@@ -115,15 +112,20 @@ extension WeatherViewController: UICollectionViewDataSource, UICollectionViewDel
 
 extension WeatherViewController: WeatherViewProtocol {
     
-  func showWeather(_ model: WeatherModel) {
-      temperatureLabel.text = "\(model.temperature)°C"
-      descriptionLabel.text = model.conditionText
-      loadImage(from: model.iconURL)
-  }
+    func showHourlyForecast(_ forecast: [HourlyForecast]) {
+        self.hourlyData = forecast
+        self.hourlyCollectionView.reloadData()
+    }
+    
+    func showWeather(_ model: WeatherModel) {
+        temperatureLabel.text = "\(model.temperature)°C"
+        descriptionLabel.text = model.conditionText
+        loadImage(from: model.iconURL)
+    }
     
     func showError(_ message: String) {
-         temperatureLabel.text = "Ошибка"
-         descriptionLabel.text = message
+        temperatureLabel.text = "Ошибка"
+        descriptionLabel.text = message
         print("\(message)")
-     }
+    }
 }
