@@ -6,6 +6,7 @@
 //
 
 struct HourlyForecast: Codable {
+    
     let time: String
     let temperature: Double
     let iconURL: String
@@ -30,7 +31,6 @@ struct HourlyForecast: Codable {
         iconURL = "https:\(icon)"
     }
 
-    // 🔧 Добавьте этот инициализатор вручную
     init(time: String, temperature: Double, iconURL: String) {
         self.time = time
         self.temperature = temperature

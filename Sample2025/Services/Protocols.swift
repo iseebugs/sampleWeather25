@@ -5,11 +5,15 @@
 //  Created by Macbook on 17.05.2025.
 //
 
+// MARK: - LocationServiceDelegate
+
 protocol LocationServiceDelegate: AnyObject {
     
     func didUpdateLocation(latitude: Double, longitude: Double)
     func didFailWithDefaultLocation()
 }
+
+// MARK: - WeatherServiceProtocol
 
 protocol WeatherServiceProtocol {
     

@@ -5,10 +5,14 @@
 //  Created by Macbook on 19.05.2025.
 //
 
+// MARK: - HourlyForecastPresenterProtocol
+
 protocol HourlyForecastPresenterProtocol {
     
     func configureView()
 }
+
+// MARK: - HourlyForecastView
 
 protocol HourlyForecastView: AnyObject {
     

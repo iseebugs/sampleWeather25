@@ -16,11 +16,13 @@ protocol WeatherViewProtocol: AnyObject {
     func reloadDailyForecast()
     func showError(_ message: String)
     func hideError()
+    func updateCityName(_ name: String)
 }
 
 // MARK: - WeatherPresenterProtocol
 
 protocol WeatherPresenterProtocol: AnyObject {
+    
     func viewDidLoad()
 
     func numberOfHourlyItems() -> Int

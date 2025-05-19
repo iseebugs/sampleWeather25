@@ -13,17 +13,20 @@ import CoreLocation
 
 final class WeatherInteractor: WeatherInteractorProtocol {
 
-    // MARK: - Dependencies
+// MARK: - Dependencies
+    
     weak var presenter: WeatherInteractorOutputProtocol?
     private let locationService = LocationService()
     private let weatherService: WeatherServiceProtocol = WeatherService()
 
-    // MARK: - Init
+// MARK: - Init
+    
     init() {
         locationService.delegate = self
     }
 
-    // MARK: - WeatherInteractorProtocol
+// MARK: - WeatherInteractorProtocol
+    
     func fetchWeather() {
         locationService.requestLocation()
     }
@@ -46,11 +49,8 @@ extension WeatherInteractor: LocationServiceDelegate {
         }
 
         weatherService.fetchForecast(lat: latitude, lon: longitude) { [weak self] result in
-            print("✨✨✨✨✨\(result)")
-
             DispatchQueue.main.async {
                 switch result {
-
                 case .success(let forecast):
                     self?.presenter?.didFetchForecast(forecast)
                 case .failure(let error):

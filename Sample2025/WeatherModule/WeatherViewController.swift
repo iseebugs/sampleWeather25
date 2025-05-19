@@ -4,28 +4,46 @@
 //
 //  Created by Macbook on 17.05.2025.
 //
-//
-//  ViewController.swift
-//  Sample2025
-//
-//  Created by Macbook on 17.05.2025.
-//
+
 import UIKit
 
-final class WeatherViewController: UIViewController {
-    
-    // MARK: - Dependencies
-    
-    var presenter: WeatherPresenterProtocol?
+// MARK: - WeatherViewController
 
-    // MARK: - UI Elements
+final class WeatherViewController: UIViewController {
+
+// MARK: - Dependencies
+
+    var presenter: WeatherPresenterProtocol?
     
+// MARK: - Constants
+
+    private enum Constants {
+        static let hourlyItemSize = CGSize(width: 80, height: 100)
+        static let dailyItemHeight: CGFloat = 60
+        static let collectionSpacing: CGFloat = 8
+        static let cityFont = UIFont.systemFont(ofSize: 24, weight: .medium)
+        static let temperatureFont = UIFont.systemFont(ofSize: 36, weight: .bold)
+        static let descriptionFont = UIFont.systemFont(ofSize: 20)
+        static let iconSize: CGFloat = 64
+        static let stackSpacing: CGFloat = 12
+        static let topInset: CGFloat = 24
+        static let sectionSpacing: CGFloat = 24
+        static let sideInset: CGFloat = 16
+        static let bottomInset: CGFloat = 24
+        static let errorHeight: CGFloat = 60
+        static let dailyHorizontalPadding: CGFloat = 16
+        static let hourlyCollectionHeight: CGFloat = 100
+    }
+
+
+// MARK: - UI Elements
+
     private lazy var hourlyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 80, height: 100)
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
+        layout.itemSize = Constants.hourlyItemSize
+        layout.minimumInteritemSpacing = Constants.collectionSpacing
+        layout.minimumLineSpacing = Constants.collectionSpacing
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -36,7 +54,7 @@ final class WeatherViewController: UIViewController {
         collectionView.register(HourlyForecastCell.self, forCellWithReuseIdentifier: "HourlyForecastCell")
         return collectionView
     }()
-    
+
     private lazy var errorView: WeatherErrorView = {
         let view = WeatherErrorView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -47,12 +65,19 @@ final class WeatherViewController: UIViewController {
         return view
     }()
 
+    private let cityLabel: UILabel = {
+        let label = UILabel()
+        label.font = Constants.cityFont
+        label.textAlignment = .center
+        return label
+    }()
+
     private lazy var dailyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.itemSize = CGSize(width: view.frame.width - 32, height: 60)
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
+        layout.itemSize = CGSize(width: view.frame.width - Constants.dailyHorizontalPadding * 2, height: Constants.dailyItemHeight)
+        layout.minimumInteritemSpacing = Constants.collectionSpacing
+        layout.minimumLineSpacing = Constants.collectionSpacing
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -67,7 +92,8 @@ final class WeatherViewController: UIViewController {
     private let descriptionLabel = UILabel()
     private let iconImageView = UIImageView()
 
-    // MARK: - Lifecycle
+// MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -75,20 +101,21 @@ final class WeatherViewController: UIViewController {
         presenter?.viewDidLoad()
     }
 
-    // MARK: - Setup
+// MARK: - Setup
+
     private func setupUI() {
-        temperatureLabel.font = .systemFont(ofSize: 36, weight: .bold)
+        temperatureLabel.font = Constants.temperatureFont
         temperatureLabel.textAlignment = .center
 
-        descriptionLabel.font = .systemFont(ofSize: 20)
+        descriptionLabel.font = Constants.descriptionFont
         descriptionLabel.textAlignment = .center
 
         iconImageView.contentMode = .scaleAspectFit
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
 
-        let stack = UIStackView(arrangedSubviews: [temperatureLabel, iconImageView, descriptionLabel])
+        let stack = UIStackView(arrangedSubviews: [cityLabel, temperatureLabel, iconImageView, descriptionLabel])
         stack.axis = .vertical
-        stack.spacing = 12
+        stack.spacing = Constants.stackSpacing
         stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
 
@@ -96,31 +123,35 @@ final class WeatherViewController: UIViewController {
         view.addSubview(hourlyCollectionView)
         view.addSubview(dailyCollectionView)
         view.addSubview(errorView)
+        dailyCollectionView.alwaysBounceVertical = true
 
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
-            iconImageView.widthAnchor.constraint(equalToConstant: 64),
-            iconImageView.heightAnchor.constraint(equalToConstant: 64),
+            stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.topInset),
+            iconImageView.widthAnchor.constraint(equalToConstant: Constants.iconSize),
+            iconImageView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
 
-            hourlyCollectionView.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 24),
-            hourlyCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            hourlyCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            hourlyCollectionView.heightAnchor.constraint(equalToConstant: 100),
+            hourlyCollectionView.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: Constants.sectionSpacing),
+            hourlyCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.sideInset),
+            hourlyCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.sideInset),
+            hourlyCollectionView.heightAnchor.constraint(equalToConstant: Constants.hourlyCollectionHeight),
 
-            dailyCollectionView.topAnchor.constraint(equalTo: hourlyCollectionView.bottomAnchor, constant: 24),
-            dailyCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            dailyCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            dailyCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -24),
-            
-            errorView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            errorView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            errorView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -24),
-            errorView.heightAnchor.constraint(equalToConstant: 60)
+            dailyCollectionView.topAnchor.constraint(equalTo: hourlyCollectionView.bottomAnchor, constant: Constants.sectionSpacing),
+            dailyCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.sideInset),
+            dailyCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.sideInset),
+            dailyCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.bottomInset),
+
+            errorView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.sideInset),
+            errorView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.sideInset),
+            errorView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -Constants.bottomInset),
+            errorView.heightAnchor.constraint(equalToConstant: Constants.errorHeight)
         ])
+
+        setupGradientBackground()
     }
 
-    // MARK: - Helpers
+// MARK: - Helpers
+
     private func loadImage(from urlString: String) {
         guard let url = URL(string: urlString) else { return }
         URLSession.shared.dataTask(with: url) { data, _, _ in
@@ -129,6 +160,29 @@ final class WeatherViewController: UIViewController {
                 self.iconImageView.image = UIImage(data: data)
             }
         }.resume()
+    }
+
+    private func setupGradientBackground() {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            UIColor.systemYellow.cgColor,
+            UIColor.systemBlue.cgColor
+        ]
+        gradientLayer.startPoint = CGPoint(x: 1.0, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.0, y: 1.0)
+        gradientLayer.frame = view.bounds
+
+        let backgroundView = UIView(frame: view.bounds)
+        backgroundView.layer.insertSublayer(gradientLayer, at: 0)
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(backgroundView, at: 0)
+
+        NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }
 
@@ -183,8 +237,12 @@ extension WeatherViewController: WeatherViewProtocol {
         errorView.isHidden = false
         errorView.setMessage(message)
     }
-    
+
     func hideError() {
         errorView.isHidden = true
+    }
+
+    func updateCityName(_ name: String) {
+        cityLabel.text = name
     }
 }

@@ -4,57 +4,105 @@
 //
 //  Created by Macbook on 19.05.2025.
 //
-
 import UIKit
 
 final class HourlyForecastCell: UICollectionViewCell {
+
+// MARK: - UI Elements
     
     private let timeLabel = UILabel()
     private let iconImageView = UIImageView()
     private let tempLabel = UILabel()
-    private var presenter: HourlyForecastPresenter?
+    private let spacerBottom = UIView()
+    private var gradientLayer: CAGradientLayer?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
+// MARK: - Constants
+    
+    struct HourlyForecastCell {
+        static let fontSize: CGFloat = 17
+        static let iconSize: CGFloat = 65
+        static let cornerRadius: CGFloat = 12
+        static let stackSpacing: CGFloat = -5
+        static let spacierHeight: CGFloat = 46
+        static let gradientColors: [CGColor] = [
+            UIColor(white: 1.0, alpha: 0.3).cgColor,
+            UIColor(white: 0.8, alpha: 0.3).cgColor
+        ]
+        static let gradientStart = CGPoint(x: 0, y: 0)
+        static let gradientEnd = CGPoint(x: 1, y: 1)
     }
     
+// MARK: - Properties
+    
+    private var presenter: HourlyForecastPresenter?
+    
+// MARK: - Lifecycle
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer?.frame = contentView.bounds
+    }
+
+// MARK: - Configuration
+
     func configure(with model: HourlyForecast) {
         presenter = HourlyForecastPresenter(view: self, model: model)
         presenter?.configureView()
     }
-    
-    private func setup() {
-        self.contentView.backgroundColor = .systemTeal
 
-        timeLabel.font = .systemFont(ofSize: 14)
+// MARK: - Private
+
+    private func setupUI() {
+        contentView.backgroundColor = .clear
+        contentView.layer.cornerRadius = HourlyForecastCell.cornerRadius
+        contentView.clipsToBounds = true
+
+        timeLabel.font = .systemFont(ofSize: HourlyForecastCell.fontSize)
         timeLabel.textAlignment = .center
-        
+
+        tempLabel.font = .systemFont(ofSize: HourlyForecastCell.fontSize)
+        tempLabel.textAlignment = .center
+
         iconImageView.contentMode = .scaleAspectFit
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        tempLabel.font = .systemFont(ofSize: 14)
-        tempLabel.textAlignment = .center
-        
+
         let stack = UIStackView(arrangedSubviews: [timeLabel, iconImageView, tempLabel])
         stack.axis = .vertical
         stack.alignment = .center
-        stack.spacing = 4
+        stack.spacing = HourlyForecastCell.stackSpacing
         stack.translatesAutoresizingMaskIntoConstraints = false
-        
+
         contentView.addSubview(stack)
-        
+
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            stack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            iconImageView.widthAnchor.constraint(equalToConstant: HourlyForecastCell.iconSize),
+            iconImageView.heightAnchor.constraint(equalToConstant: HourlyForecastCell.iconSize)
         ])
-        
-        iconImageView.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        iconImageView.heightAnchor.constraint(equalToConstant: 32).isActive = true
+
+        applyGradientBackground()
+    }
+
+    private func applyGradientBackground() {
+        let gradient = CAGradientLayer()
+        gradient.colors = HourlyForecastCell.gradientColors
+        gradient.startPoint = HourlyForecastCell.gradientStart
+        gradient.endPoint = HourlyForecastCell.gradientEnd
+        gradient.frame = contentView.bounds
+        gradient.cornerRadius = HourlyForecastCell.cornerRadius
+
+        contentView.layer.insertSublayer(gradient, at: 0)
+        gradientLayer = gradient
     }
 }
 

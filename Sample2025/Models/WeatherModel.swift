@@ -10,4 +10,5 @@ struct WeatherModel {
     let temperature: Double
     let conditionText: String
     let iconURL: String
+    let cityName: String
 }

@@ -4,39 +4,41 @@
 //
 //  Created by Macbook on 17.05.2025.
 //
+
 import Foundation
 
 final class WeatherPresenter: WeatherPresenterProtocol {
     
-    // MARK: - Dependencies
+// MARK: - Dependencies
+    
     weak var view: WeatherViewProtocol?
     var interactor: WeatherInteractorProtocol?
     var router: WeatherRouterProtocol?
-
-    // MARK: - State
+    
+// MARK: - State
     
     private var currentWeather: WeatherModel?
     private var hourlyForecast: [HourlyForecast] = []
     private var dailyForecastPresenters: [DailyForecastCellPresenterProtocol] = []
-
-    // MARK: - WeatherPresenterProtocol
+    
+// MARK: - WeatherPresenterProtocol
     
     func viewDidLoad() {
         interactor?.fetchWeather()
     }
-
+    
     func numberOfHourlyItems() -> Int {
         return hourlyForecast.count
     }
-
+    
     func hourlyItem(at index: Int) -> HourlyForecast {
         return hourlyForecast[index]
     }
-
+    
     func numberOfDailyItems() -> Int {
         return dailyForecastPresenters.count
     }
-
+    
     func dailyPresenter(at index: Int) -> DailyForecastCellPresenterProtocol {
         return dailyForecastPresenters[index]
     }
@@ -54,21 +56,19 @@ extension WeatherPresenter: WeatherInteractorOutputProtocol {
             description: model.conditionText,
             iconURL: model.iconURL
         )
+        view?.updateCityName(model.cityName)
     }
     
     func didFetchForecast(_ forecast: ForecastModel) {
-        print("💕💕💕 daily count: \(forecast)")
-
-          hourlyForecast = forecast.hourly
-          dailyForecastPresenters = forecast.daily.map { DailyForecastCellPresenter(model: $0) }
-          print("✨✨✨ daily count: \(dailyForecastPresenters.count)")
-          view?.hideError()
-          view?.reloadHourlyForecast()
-          view?.reloadDailyForecast()
-      }
-
-
+        hourlyForecast = forecast.hourly
+        dailyForecastPresenters = forecast.daily.map { DailyForecastCellPresenter(model: $0) }
+        view?.hideError()
+        view?.reloadHourlyForecast()
+        view?.reloadDailyForecast()
+    }
+    
+    
     func didFailToFetchWeather(error: String) {
-view?.showError(error)
+        view?.showError(error)
     }
 }

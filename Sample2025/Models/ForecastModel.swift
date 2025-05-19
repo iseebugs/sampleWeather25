@@ -19,7 +19,7 @@ struct Forecast: Codable {
 struct ForecastDay: Codable {
     let date: String
     let day: Day
-    let hour: [HourlyForecast] // если нужен почасовой прогноз
+    let hour: [HourlyForecast]
 }
 
 struct Day: Codable {

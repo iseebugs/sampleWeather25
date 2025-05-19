@@ -8,6 +8,7 @@
 // MARK: - DailyForecast
 
 struct DailyForecast: Decodable {
+    
     let date: String
     let averageTemperature: Double
     let iconURL: String

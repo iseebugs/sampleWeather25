@@ -7,15 +7,23 @@
 
 import CoreLocation
 
+// MARK: - LocationService
+
 class LocationService: NSObject {
-    
+
+// MARK: Properties
+
     private let locationManager = CLLocationManager()
     weak var delegate: LocationServiceDelegate?
+
+// MARK: Initialization
 
     override init() {
         super.init()
         locationManager.delegate = self
     }
+
+// MARK: Public Methods
 
     func requestLocation() {
         locationManager.requestWhenInUseAuthorization()
@@ -29,17 +37,18 @@ class LocationService: NSObject {
         }
     }
 
+// MARK: Private Methods
+
     private func useDefaultLocation() {
-//        delegate?.didUpdateLocation(latitude: Constants.defaultLocation.latitude,
-//                                    longitude: Constants.defaultLocation.longitude)
-        
         delegate?.didUpdateLocation(latitude: Constants.Location.fallback.latitude,
                                     longitude: Constants.Location.fallback.longitude)
     }
 }
 
+// MARK: - CLLocationManagerDelegate
+
 extension LocationService: CLLocationManagerDelegate {
-    
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             delegate?.didUpdateLocation(latitude: location.coordinate.latitude,
